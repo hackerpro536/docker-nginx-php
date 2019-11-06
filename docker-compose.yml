@@ -12,9 +12,9 @@ services:
     environment:
       SERVICE_NAME: app
       SERVICE_TAGS: dev
-    working_dir: "${WORKING_DIR}"
+    working_dir: ${WORKING_DIR}
     volumes:
-      - ./:"${WORKING_DIR}"
+      - ./:${WORKING_DIR}
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       app-network:
@@ -38,7 +38,7 @@ services:
     depends_on:
       - app
     volumes:
-      - ./:"${WORKING_DIR}"
+      - ./:${WORKING_DIR}
       - ./nginx/conf.d/:/etc/nginx/conf.d/
     networks:
       app-network:
