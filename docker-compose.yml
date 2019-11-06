@@ -1,0 +1,60 @@
+version: '3'
+services:
+
+  #PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: webnode
+    container_name: front-service-app
+    restart: unless-stopped
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: "${WORKING_DIR}"
+    volumes:
+      - ./:"${WORKING_DIR}"
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      app-network:
+        ipv4_address: 172.16.238.13
+    extra_hosts:
+      - "customer-service.com:172.16.238.15"
+      - "shop-service.com:172.16.238.15"
+      - "common-service.com:172.16.238.15"
+      - "post-service.com:172.16.238.15"
+      - "media-service.com:172.16.238.15"
+      - "render-service.com:192.168.88.83"
+      - "crawler-service.com:172.16.238.15"
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: front-service-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    volumes:
+      - ./:"${WORKING_DIR}"
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      app-network:
+        ipv4_address: 172.16.238.15
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
+#Volumes
+volumes:
+  dbdata:
+    driver: local
