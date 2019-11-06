@@ -1,11 +1,11 @@
 # docker-nginx-php
 Nginx - PHP 7.2-fpm
 
-#Env
+### Env
 ```
 cp env.example .env
 ```
-#Option
+### Option
 ```
 WORKING_DIR = /var/www/app/example/
 
